@@ -4,7 +4,7 @@ import classicslot.app.ClassicSlotController
 import classicslot.infra.ClassicSlotRepo
 
 object App {
-  def main(args: String): Unit = {
+  def main(args: Array[String]): Unit = {
     new App().run()
   }
 }
