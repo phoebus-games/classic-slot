@@ -1,0 +1,24 @@
+machine:
+  java:
+    version: openjdk8
+  services:
+    - docker
+dependencies:
+  pre:
+    - git clone git@github.com:phoebus-games/games.git /tmp/games
+    - mvn  -f /tmp/games install -DskipTests
+test:
+  override:
+    - mvn verify -Dmongodb.write-concern=ACKNOWLEDGED
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+    - find . -type f -regex ".*/target/failsafe-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+deployment:
+  prod:
+    branch: master
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker build --rm=false -t alexec/classic-slot:$CIRCLE_BUILD_NUM -t alexec/classic-slot:latest classic-slot
+      - docker push alexec/classic-slot
+      - "curl -fv -u $CIRCLE_TOKEN: -X POST -d '{\"build_parameters\": {\"COMPONENT\": \"classic-slot\"}}' -H 'Content-Type: application/json' https://circleci.com/api/v1.1/project/github/phoebus-games/deploy/tree/master"
