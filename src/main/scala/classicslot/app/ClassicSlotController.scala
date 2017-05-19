@@ -12,7 +12,7 @@ import scala.beans.BeanProperty
 
 case class Spin (@BeanProperty amount: Money)
 
-@Path("/games/classic-slot")
+@Path("/api/games/classic-slot")
 class ClassicSlotController @Inject() (repo: ClassicSlotRepo) {
 
   // TODO - remove
@@ -26,6 +26,8 @@ class ClassicSlotController @Inject() (repo: ClassicSlotRepo) {
   def get(@HeaderParam("PlayerId") playerId: String, @HeaderParam("Wallet") uri: URI): Response =
     Response.ok(repo.get(playerId, getWallet(uri))).build()
 
+  private def getWallet(uri: URI) = new HttpWallet(uri, "classic-slot", "classic-slot")
+
   @POST
   @Path("/spins")
   def spin(@HeaderParam("PlayerId") playerId: String, @HeaderParam("Wallet") uri: URI, spin: Spin): Response = {
@@ -36,6 +38,4 @@ class ClassicSlotController @Inject() (repo: ClassicSlotRepo) {
       "balance" -> wallet.getBalance
     )).build()
   }
-
-  private def getWallet(uri: URI) = new HttpWallet(uri, "classic-slot", "classic-slot")
 }

@@ -12,7 +12,7 @@ class ClassicSlotControllerIT extends IntegrationTest(new classicslot.App) {
     super.before()
 
     RestAssured.requestSpecification = spec
-      .setBasePath("/games/classic-slot")
+      .setBasePath("/api/games/classic-slot")
       .setContentType(ContentType.JSON)
       .setAccept(ContentType.JSON)
       .build()
