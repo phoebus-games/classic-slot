@@ -1,0 +1,28 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/work
+    docker:
+      - image: "circleci/openjdk:8"
+      - image: "circleci/mongo:3"
+    steps:
+      - checkout
+      - restore_cache:
+          key: maven-{{ checksum "pom.xml" }}
+      - run: git clone git@github.com:phoebus-games/games.git /tmp/games
+      - run: mvn  -f /tmp/games install -DskipTests
+      - run: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: maven-{{ checksum "pom.xml" }}
+      - run: mvn install -Dmongodb.write-concern=ACKNOWLEDGED
+      - store_test_results:
+          path: target/surefire-reports
+      - store_test_results:
+          path: target/failsafe-reports
+      - setup_remote_docker
+      - run: docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker build --rm=false -t alexec/classic-slot:latest .
+      - run: docker push alexec/classic-slot
+      - run: "curl -fv -u $CIRCLE_TOKEN: -X POST -d '{\"build_parameters\": {\"COMPONENT\": \"classic-slot\"}}' -H 'Content-Type: application/json' https://circleci.com/api/v1.1/project/github/phoebus-games/deploy/tree/master"
