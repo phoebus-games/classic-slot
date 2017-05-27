@@ -70,6 +70,10 @@
         </dependency>
         <dependency>
             <groupId>phoebus-games</groupId>
+            <artifactId>game-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>phoebus-games</groupId>
             <artifactId>slot-support</artifactId>
         </dependency>
         <dependency>
