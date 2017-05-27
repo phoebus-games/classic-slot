@@ -1,13 +1,16 @@
 package classicslot.app
 
+import classicslot.App
 import games.app.IntegrationTest
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.hamcrest.Matchers.{equalTo, notNullValue}
 import org.junit.{Before, Test}
+import org.springframework.test.context.ContextConfiguration
 
-class ClassicSlotControllerIT extends IntegrationTest(new classicslot.App) {
+@ContextConfiguration(classes = Array(classOf[App]))
+class ClassicSlotControllerIT extends IntegrationTest {
   @Before override def before(): Unit = {
     super.before()
 

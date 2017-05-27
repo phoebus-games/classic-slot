@@ -2,10 +2,11 @@ package classicslot
 
 import classicslot.app.ClassicSlotController
 import classicslot.infra.ClassicSlotRepo
+import org.springframework.boot.SpringApplication
 
 object App {
   def main(args: Array[String]): Unit = {
-    new App().run()
+    SpringApplication.run(classOf[App])
   }
 }
 
