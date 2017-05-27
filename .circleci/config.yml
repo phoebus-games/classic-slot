@@ -23,6 +23,6 @@ jobs:
           path: target/failsafe-reports
       - setup_remote_docker
       - run: docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - run: docker build --rm=false -t alexec/classic-slot:latest .
+      - run: docker build --rm=false -t alexec/classic-slot:$CIRCLE_SHA1 .
       - run: docker push alexec/classic-slot
-      - run: "curl -fv -u $CIRCLE_TOKEN: -X POST -d '{\"build_parameters\": {\"COMPONENT\": \"classic-slot\"}}' -H 'Content-Type: application/json' https://circleci.com/api/v1.1/project/github/phoebus-games/deploy/tree/master"
+      - run: ./deploy.sh
